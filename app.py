@@ -41,7 +41,7 @@ FAQ_DATA = {
 
 def load_model():
     # Using a smaller model for demo purposes
-    model_name = "facebook/opt-350m"  # Can be replaced with Mistral/Llama2
+    model_name = "deepseek-ai/DeepSeek-R1"  # Can be replaced with Mistral/Llama2
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForCausalLM.from_pretrained(model_name)
     return model, tokenizer
