@@ -126,6 +126,16 @@ GREETINGS = {
     "thanks": "You're welcome! Let me know if you need further assistance.",
 }
 
+# Function to check if query is telecom-related
+def is_query_in_context(query):
+    # Check if query contains any telecom-related keywords
+    telecom_keywords = [
+        "sim", "network", "phone", "call", "data", "internet", "bill", 
+        "plan", "recharge", "balance", "broadband", "wifi", "connection",
+        "signal", "coverage", "router", "modem"
+    ]
+    return any(keyword in query.lower() for keyword in telecom_keywords)
+
 # RAG-based response generation
 def rag_response(query, knowledge_base, model, top_k=3):
     query_embedding = model.encode(query)
@@ -229,7 +239,7 @@ def main():
                     st.session_state.messages.append({"role": "assistant", "content": response})
 
     # Chat interface
-    st.title("🤖 Echofix Chatbot")
+    st.title("🤖 Telecom Support Assistant")
     chat_container = st.container()
     with chat_container:
         for message in st.session_state.messages:
