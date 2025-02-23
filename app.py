@@ -1,24 +1,35 @@
 import streamlit as st
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 import torch
-import json
-from datetime import datetime
 from huggingface_hub import login
-import os
 import base64
-
-# Add Hugging Face token to environment
-HUGGING_FACE_TOKEN = st.secrets["HUGGING_FACE_TOKEN"] if "HUGGING_FACE_TOKEN" in st.secrets else "your-token-here"
 
 # Initialize Hugging Face authentication
 @st.cache_resource
 def init_auth():
+    login(token=st.secrets["HUGGING_FACE_TOKEN"])
+
+# Load model with device_map and quantization for faster inference
+@st.cache_resource
+def load_model(model_name="mistralai/Mixtral-8x7B-Instruct-v0.1"):
     try:
-        login(HUGGING_FACE_TOKEN)
-        return True
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            device_map="auto",
+            torch_dtype=torch.float16,
+            load_in_4bit=True  # Use 4-bit quantization for faster inference
+        )
+        pipe = pipeline(
+            "text-generation",
+            model=model,
+            tokenizer=tokenizer,
+            device_map="auto"
+        )
+        return pipe
     except Exception as e:
-        st.error(f"Failed to authenticate with Hugging Face: {str(e)}")
-        return False
+        st.error(f"Failed to load model: {str(e)}")
+        return None
 
 # Enhanced FAQ data with categories
 FAQ_DATA = {
@@ -55,18 +66,6 @@ FAQ_DATA = {
     }
 }
 
-@st.cache_resource
-def load_model():
-    try:
-        # Using a different model (you can change this to any model you prefer)
-        model_name = "mistralai/Mixtral-8x7B-Instruct-v0.1"  # or any other model you want to use
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
-        model = AutoModelForCausalLM.from_pretrained(model_name)
-        return model, tokenizer
-    except Exception as e:
-        st.error(f"Failed to load model: {str(e)}")
-        return None, None
-
 def is_query_in_context(query):
     # Check if query contains any telecom-related keywords
     telecom_keywords = [
@@ -98,106 +97,72 @@ def get_response(query, category=None):
     
     # If no match found in FAQ, use the model for telecom-specific response
     try:
-        model, tokenizer = load_model()
-        if model is None or tokenizer is None:
+        pipe = load_model()
+        if pipe is None:
             return "I apologize, but I'm currently unable to process your request. Please try one of the quick replies or rephrase your question."
         
         # Create a telecom-specific context
-        context = "You are a telecom customer service agent. Please provide a helpful response to: " + query
-        inputs = tokenizer(context, return_tensors="pt", max_length=100, truncation=True)
+        prompt = f"""<s>[INST] You are a telecom support assistant. 
+        Answer this query concisely: {query} [/INST]"""
         
-        outputs = model.generate(
-            inputs.input_ids,
-            max_length=150,
-            num_return_sequences=1,
+        response = pipe(
+            prompt,
+            max_new_tokens=256,
+            do_sample=True,
             temperature=0.7,
-            pad_token_id=tokenizer.eos_token_id,
-            no_repeat_ngram_size=3
-        )
+            top_k=50,
+            top_p=0.95,
+            return_full_text=False
+        )[0]['generated_text']
         
-        response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        return response
         
-        # Add a disclaimer for non-FAQ responses
-        return response + "\n\nNote: This is a general response. For specific issues, please contact our customer support."
-    
     except Exception as e:
-        return "I apologize, but I'm having trouble generating a response. Please try using one of the quick replies or contact our support team."
+        return f"Error generating response: {str(e)}"
 
-def initialize_session_state():
-    if 'messages' not in st.session_state:
-        st.session_state.messages = []
-    if 'selected_category' not in st.session_state:
-        st.session_state.selected_category = "All Categories"
-
-def set_background_image(image_path):
-    with open(image_path, "rb") as image_file:
-        encoded_string = base64.b64encode(image_file.read()).decode()
+# Set background image with full fit
+def set_bg(image_path):
+    with open(image_path, "rb") as f:
+        img_data = f.read()
+    b64_img = base64.b64encode(img_data).decode()
     st.markdown(
-        f"""
-        <style>
+        f"""<style>
         .stApp {{
-            background-image: url("data:image/jpg;base64,{encoded_string}");
+            background-image: url("data:image/png;base64,{b64_img}");
             background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
         }}
-        </style>
-        """,
+        .stChatMessage {{
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 10px;
+            margin: 5px 0;
+        }}
+        </style>""",
         unsafe_allow_html=True
     )
 
 def main():
     st.set_page_config(page_title="Telecom Support Assistant", layout="wide")
-    
-    # Initialize authentication
     init_auth()
-    
-    # Set background image
-    set_background_image("sample.jpg")  # Replace with your image path
 
-    # Custom CSS
-    st.markdown("""
-        <style>
-        .stTextInput>div>div>input {
-            border-radius: 20px;
-        }
-        .chat-message {
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            display: flex;
-        }
-        .user-message {
-            background-color: #e3f2fd;
-        }
-        .bot-message {
-            background-color: #f5f5f5;
-        }
-        .quick-reply-button {
-            margin: 0.2rem;
-            padding: 0.5rem 1rem;
-            border-radius: 15px;
-            border: 1px solid #ddd;
-            background-color: white;
-            cursor: pointer;
-        }
-        .quick-reply-button:hover {
-            background-color: #e3f2fd;
-        }
-        </style>
-    """, unsafe_allow_html=True)
+    # Set background image (replace with your image path)
+    set_bg("sample.jpg")
 
-    initialize_session_state()
+    # Initialize session state
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+    if "processing" not in st.session_state:
+        st.session_state.processing = False
 
-    # Header
-    st.title("🤖 Telecom Support Assistant")
-    
-    # Sidebar with category filter
+    # Sidebar for category selection and quick replies
     with st.sidebar:
         st.header("Filters")
         categories = ["All Categories"] + list(FAQ_DATA.keys())
         selected_category = st.selectbox("Select Category", categories)
-        st.session_state.selected_category = selected_category
 
-        # Quick replies based on selected category
         st.header("Quick Replies")
         if selected_category == "All Categories":
             for category in FAQ_DATA.values():
@@ -216,22 +181,28 @@ def main():
                     st.session_state.messages.append({"role": "assistant", "content": response})
 
     # Chat interface
+    st.title("🤖 Telecom Support Assistant")
     chat_container = st.container()
     with chat_container:
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
                 st.write(message["content"])
 
-    # User input
-    if prompt := st.chat_input("Type your query here..."):
+    # User input handling
+    if prompt := st.chat_input("Type your query..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
-        response = get_response(prompt, st.session_state.selected_category)
-        st.session_state.messages.append({"role": "assistant", "content": response})
+        st.session_state.processing = True
+        st.rerun()
 
-    # Clear chat button
-    if st.button("Clear Chat"):
-        st.session_state.messages = []
-        st.experimental_rerun()
+    # Response generation handling
+    if st.session_state.processing:
+        last_message = st.session_state.messages[-1]
+        if last_message["role"] == "user":
+            with st.spinner("Analyzing your query..."):
+                response = get_response(last_message["content"], selected_category)
+                st.session_state.messages.append({"role": "assistant", "content": response})
+            st.session_state.processing = False
+            st.rerun()
 
 if __name__ == "__main__":
     main()
