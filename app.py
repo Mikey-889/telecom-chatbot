@@ -151,7 +151,7 @@ def main():
     init_auth()
     
     # Set background image
-    set_background_image("your_image.jpg")  # Replace with your image path
+    set_background_image("sample.jpg")  # Replace with your image path
 
     # Custom CSS
     st.markdown("""
