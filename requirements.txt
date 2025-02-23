@@ -1,6 +1,8 @@
-streamlit==1.31.0
-transformers==4.36.2  # Ensure this version or higher
+streamlit==1.32.0
+transformers==4.38.2
 torch==2.2.1
-sentence-transformers==3.3.1
-huggingface-hub==0.29.1
-numpy==2.2.3
+sentence-transformers==2.6.0
+huggingface-hub==0.22.2
+numpy==1.26.4
+Pillow==10.2.0
+scikit-learn==1.4.0
