@@ -6,7 +6,7 @@ from datetime import datetime
 from huggingface_hub import login
 import os
 
-# Add Hugging Face token to environment (you'll need to set this in Streamlit secrets in production)
+# Add Hugging Face token to environment
 HUGGING_FACE_TOKEN = st.secrets["HUGGING_FACE_TOKEN"] if "HUGGING_FACE_TOKEN" in st.secrets else "your-token-here"
 
 # Initialize Hugging Face authentication
@@ -19,7 +19,7 @@ def init_auth():
         st.error(f"Failed to authenticate with Hugging Face: {str(e)}")
         return False
 
-# Enhanced FAQ data with categories (same as before)
+# Enhanced FAQ data with categories
 FAQ_DATA = {
     "SIM Services": {
         "sim_activation": {
@@ -122,5 +122,97 @@ def get_response(query, category=None):
     except Exception as e:
         return "I apologize, but I'm having trouble generating a response. Please try using one of the quick replies or contact our support team."
 
-# Rest of the code remains the same...
-[Previous initialize_session_state() and main() functions remain unchanged]
+def initialize_session_state():
+    if 'messages' not in st.session_state:
+        st.session_state.messages = []
+    if 'selected_category' not in st.session_state:
+        st.session_state.selected_category = "All Categories"
+
+def main():
+    st.set_page_config(page_title="Telecom Support Assistant", layout="wide")
+    
+    # Initialize authentication
+    init_auth()
+    
+    # Custom CSS
+    st.markdown("""
+        <style>
+        .stTextInput>div>div>input {
+            border-radius: 20px;
+        }
+        .chat-message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+        }
+        .user-message {
+            background-color: #e3f2fd;
+        }
+        .bot-message {
+            background-color: #f5f5f5;
+        }
+        .quick-reply-button {
+            margin: 0.2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            border: 1px solid #ddd;
+            background-color: white;
+            cursor: pointer;
+        }
+        .quick-reply-button:hover {
+            background-color: #e3f2fd;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    initialize_session_state()
+
+    # Header
+    st.title("🤖 Telecom Support Assistant")
+    
+    # Sidebar with category filter
+    with st.sidebar:
+        st.header("Filters")
+        categories = ["All Categories"] + list(FAQ_DATA.keys())
+        selected_category = st.selectbox("Select Category", categories)
+        st.session_state.selected_category = selected_category
+
+        # Quick replies based on selected category
+        st.header("Quick Replies")
+        if selected_category == "All Categories":
+            for category in FAQ_DATA.values():
+                for item in category.values():
+                    if st.button(item["quick_reply"], key=item["quick_reply"]):
+                        new_message = item["query"][0]
+                        st.session_state.messages.append({"role": "user", "content": new_message})
+                        response = get_response(new_message, selected_category)
+                        st.session_state.messages.append({"role": "assistant", "content": response})
+        else:
+            for item in FAQ_DATA[selected_category].values():
+                if st.button(item["quick_reply"], key=item["quick_reply"]):
+                    new_message = item["query"][0]
+                    st.session_state.messages.append({"role": "user", "content": new_message})
+                    response = get_response(new_message, selected_category)
+                    st.session_state.messages.append({"role": "assistant", "content": response})
+
+    # Chat interface
+    chat_container = st.container()
+    with chat_container:
+        for message in st.session_state.messages:
+            with st.chat_message(message["role"]):
+                st.write(message["content"])
+
+    # User input
+    if prompt := st.chat_input("Type your query here..."):
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        response = get_response(prompt, st.session_state.selected_category)
+        st.session_state.messages.append({"role": "assistant", "content": response})
+
+    # Clear chat button
+    if st.button("Clear Chat"):
+        st.session_state.messages = []
+        st.experimental_rerun()
+
+if __name__ == "__main__":
+    main()
