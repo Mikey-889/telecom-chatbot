@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 from huggingface_hub import login
 import os
+import base64
 
 # Add Hugging Face token to environment
 HUGGING_FACE_TOKEN = st.secrets["HUGGING_FACE_TOKEN"] if "HUGGING_FACE_TOKEN" in st.secrets else "your-token-here"
@@ -128,12 +129,30 @@ def initialize_session_state():
     if 'selected_category' not in st.session_state:
         st.session_state.selected_category = "All Categories"
 
+def set_background_image(image_path):
+    with open(image_path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode()
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("data:image/jpg;base64,{encoded_string}");
+            background-size: cover;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
 def main():
     st.set_page_config(page_title="Telecom Support Assistant", layout="wide")
     
     # Initialize authentication
     init_auth()
     
+    # Set background image
+    set_background_image("your_image.jpg")  # Replace with your image path
+
     # Custom CSS
     st.markdown("""
         <style>
