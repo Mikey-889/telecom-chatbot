@@ -193,17 +193,27 @@ def set_bg(image_path):
             background-attachment: fixed;
         }}
         .stChatMessage {{
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
             padding: 10px;
             margin: 5px 0;
+            font-size: 16px;
+            color: #333;
+        }}
+        .stTextInput>div>div>input {{
+            font-size: 16px;
+            color: #333;
+        }}
+        .stButton>button {{
+            font-size: 16px;
+            color: #333;
         }}
         </style>""",
         unsafe_allow_html=True
     )
 
 def main():
-    st.set_page_config(page_title="Telecom Support Assistant", layout="wide")
+    st.set_page_config(page_title="Echofix Support Assistant", layout="wide")
     init_auth()
 
     # Set background image (replace with your image path)
@@ -221,7 +231,7 @@ def main():
         categories = ["All Categories"] + list(FAQ_DATA.keys())
         selected_category = st.selectbox("Select Category", categories)
 
-        st.header("Quick Replies")
+        st.header("FAQs")
         if selected_category == "All Categories":
             for category in FAQ_DATA.values():
                 for item in category.values():
