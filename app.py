@@ -138,38 +138,20 @@ def is_query_in_context(query):
 
 # RAG-based response generation
 def rag_response(query, knowledge_base, model, top_k=3):
-    try:
-        # Generate query embedding
-        query_embedding = model.encode(query)
-        
-        # Generate embeddings for knowledge base questions
-        knowledge_embeddings = [model.encode(item["question"]) for item in knowledge_base]
-        
-        # Calculate similarities
-        similarities = util.cos_sim(query_embedding, knowledge_embeddings)[0]
-        
-        # Get top k most similar indices
-        top_indices = torch.topk(similarities, min(top_k, len(similarities))).indices.tolist()
-        
-        # Get corresponding responses
-        responses = [knowledge_base[i]["answer"] for i in top_indices]
-        
-        # Return joined responses
-        if responses:
-            return "\n\n".join(responses)
-        else:
-            return "I apologize, but I couldn't find a specific answer to your question. Please try rephrasing or contact customer support for assistance."
-            
-    except Exception as e:
-        # Return the best matching FAQ response instead of error
-        for category_data in FAQ_DATA.values():
-            for data in category_data.values():
-                if any(q in query.lower() for q in data["query"]):
-                    return data["response"]
-        
-        # If no FAQ match found, return a generic response
-        return "I understand you have a question about our telecom services. Please try rephrasing your question, or contact our customer support for immediate assistance."
-
+    query_embedding = model.encode(query)
+    knowledge_embeddings = [model.encode(item["question"]) for item in knowledge_base]
+    similarities = util.cos_sim(query_embedding, knowledge_embeddings)[0]
+    
+    # Fix: Use torch.topk instead of np.argsort
+    top_similarities, top_indices = torch.topk(similarities, min(top_k, len(similarities)))
+    
+    # Convert tensor indices to list
+    top_indices = top_indices.tolist()
+    
+    # Get responses for top matches
+    responses = [knowledge_base[i]["answer"] for i in top_indices]
+    return "\n\n".join(responses)
+    
 def get_response(query, category=None):
     query = query.lower()
     
