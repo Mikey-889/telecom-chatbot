@@ -207,7 +207,7 @@ def main():
     init_auth()
 
     # Set background image (replace with your image path)
-    set_bg("sample.jpg")
+    set_bg("image.png")
 
     # Initialize session state
     if "messages" not in st.session_state:
@@ -239,7 +239,7 @@ def main():
                     st.session_state.messages.append({"role": "assistant", "content": response})
 
     # Chat interface
-    st.title("🤖 Telecom Support Assistant")
+    st.title("🤖 Echofix Support Assistant")
     chat_container = st.container()
     with chat_container:
         for message in st.session_state.messages:
