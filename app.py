@@ -199,21 +199,58 @@ def set_bg(image_path):
             background-repeat: no-repeat;
             background-attachment: fixed;
         }}
+        /* Main chat message styling */
         .stChatMessage {{
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.9) !important;
             border-radius: 10px;
             padding: 10px;
             margin: 5px 0;
             font-size: 16px;
-            color: #333;
+            color: #333 !important;
         }}
+        /* Sidebar text color */
+        .sidebar .sidebar-content {{
+            color: white !important;
+        }}
+        /* Sidebar button text */
+        .sidebar .stButton > button {{
+            color: white !important;
+        }}
+        /* Sidebar selectbox */
+        .sidebar .stSelectbox {{
+            color: white !important;
+        }}
+        .sidebar .stSelectbox > div > div {{
+            color: white !important;
+        }}
+        /* Headers in sidebar */
+        .sidebar .block-container h1,
+        .sidebar .block-container h2,
+        .sidebar .block-container h3,
+        .sidebar .block-container h4 {{
+            color: white !important;
+        }}
+        /* Main chat input styling */
         .stTextInput>div>div>input {{
             font-size: 16px;
-            color: #333;
+            color: black !important;
+            background-color: rgba(255, 255, 255, 0.9) !important;
         }}
-        .stButton>button {{
-            font-size: 16px;
-            color: #333;
+        /* Main chat header */
+        .main .block-container h1,
+        .main .block-container h2,
+        .main .block-container h3 {{
+            color: black !important;
+        }}
+        /* Quick reply buttons in sidebar */
+        .sidebar .stButton>button {{
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white !important;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }}
+        .sidebar .stButton>button:hover {{
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }}
         </style>""",
         unsafe_allow_html=True
