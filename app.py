@@ -131,7 +131,8 @@ def is_query_in_context(query):
     telecom_keywords = [
         "sim", "network", "phone", "call", "data", "internet", "bill", 
         "plan", "recharge", "balance", "broadband", "wifi", "connection",
-        "signal", "coverage", "router", "modem"
+        "signal", "coverage", "router", "modem", "roaming", "payment", 
+        "voicemail"
     ]
     return any(keyword in query.lower() for keyword in telecom_keywords)
 
