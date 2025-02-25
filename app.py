@@ -206,33 +206,28 @@ def set_ui_styling():
         
         /* Chat messages styling - auto width adjustment */
         .stChatMessage {
-            display: flex;
-            max-width: 80%; /* Prevents messages from stretching too wide */
-            width: auto; /* Allows messages to dynamically adjust */
-            margin-bottom: 8px;
-        }
-        
-        .stChatMessageContent {
-            padding: 10px;
+            background-color: #f9f9f9 !important;
             border-radius: 12px;
-            word-wrap: break-word;
-            max-width: 70%; /* Adjust width dynamically */
+            padding: 12px 16px;
+            margin: 8px 0;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            max-width: fit-content;
+            display: inline-block;
         }
         
+        /* User message specific styling */
         .stChatMessageContent[data-testid="UserChatMessage"] {
-            background-color: #d1e7fd !important; /* Light blue for user */
-            align-self: flex-end;
-            text-align: right;
-            margin-left: auto; /* Pushes user messages to the right */
+            background-color: #f0f7ff !important;
+            border-radius: 12px;
+            padding: 2px;
         }
         
+        /* Assistant message specific styling */
         .stChatMessageContent[data-testid="AssistantChatMessage"] {
-            background-color: #f1f1f1 !important; /* Light grey for assistant */
-            align-self: flex-start;
-            text-align: left;
-            margin-right: auto; /* Pushes assistant messages to the left */
+            background-color: #f9f9f9 !important;
+            border-radius: 12px;
+            padding: 2px;
         }
-
         
         /* Message text color */
         .stChatMessage p {
