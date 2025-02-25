@@ -218,6 +218,9 @@ def set_ui_styling():
         /* User message specific styling */
         .stChatMessageContent[data-testid="UserChatMessage"] {
             background-color: #f0f7ff !important;
+            align-self: flex-end;
+            text-align: right;
+            margin-left: auto;
             border-radius: 12px;
             padding: 2px;
         }
@@ -225,6 +228,9 @@ def set_ui_styling():
         /* Assistant message specific styling */
         .stChatMessageContent[data-testid="AssistantChatMessage"] {
             background-color: #f9f9f9 !important;
+            align-self: flex-start;
+            text-align: left;
+            margin-right: auto; 
             border-radius: 12px;
             padding: 2px;
         }
