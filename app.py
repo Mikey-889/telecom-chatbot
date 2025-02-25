@@ -184,13 +184,13 @@ def get_response(query, category=None):
     except Exception as e:
         return f"Error generating response: {str(e)}"
 
-# Set UI styling with WhatsApp-like chat interface
+# Set UI styling for a clean, minimalist design
 def set_ui_styling():
     st.markdown(
         """<style>
         /* Clean white background */
         .stApp {
-            background-color: #f0f2f5;
+            background-color: white;
         }
         
         /* Title styling without border */
@@ -199,120 +199,68 @@ def set_ui_styling():
             background-color: transparent;
             padding: 10px 0;
             border-radius: 0;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             font-weight: 600;
             border: none;
         }
         
-        /* Hide default chat labels */
-        .stChatMessage [data-testid="StChatMessageAvatar"] {
-            display: none !important;
-        }
-        
-        /* Reset default chat message styles */
+        /* Chat messages styling - auto width adjustment */
         .stChatMessage {
-            background-color: transparent !important;
-            box-shadow: none !important;
-            padding: 0 !important;
-            margin: 4px 0 !important;
-            width: 100% !important;
-            max-width: 100% !important;
+            background-color: #f9f9f9 !important;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 8px 0;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            max-width: fit-content;
+            display: inline-block;
         }
         
-        /* User message container */
-        .stChatMessage[data-testid="user-message"] {
-            display: flex !important;
-            justify-content: flex-end !important;
+        /* User message specific styling */
+        .stChatMessageContent[data-testid="UserChatMessage"] {
+            background-color: #f0f7ff !important;
+            border-radius: 12px;
+            padding: 2px;
         }
         
-        /* Assistant message container */
-        .stChatMessage[data-testid="assistant-message"] {
-            display: flex !important;
-            justify-content: flex-start !important;
+        /* Assistant message specific styling */
+        .stChatMessageContent[data-testid="AssistantChatMessage"] {
+            background-color: #f9f9f9 !important;
+            border-radius: 12px;
+            padding: 2px;
         }
         
-        /* User message bubble */
-        .stChatMessage[data-testid="user-message"] .message-bubble {
-            background-color: #dcf8c6 !important;
-            border-radius: 10px 0 10px 10px !important;
-            padding: 8px 12px !important;
-            margin-right: 10px !important;
-            margin-left: auto !important;
-            max-width: 75% !important;
-            box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13) !important;
+        /* Message text color */
+        .stChatMessage p {
+            color: #333 !important;
+            font-size: 15px;
+            line-height: 1.5;
+            margin: 0;
         }
         
-        /* Assistant message bubble */
-        .stChatMessage[data-testid="assistant-message"] .message-bubble {
-            background-color: white !important;
-            border-radius: 0 10px 10px 10px !important;
-            padding: 8px 12px !important;
-            margin-left: 10px !important;
-            margin-right: auto !important;
-            max-width: 75% !important;
-            box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13) !important;
-        }
-        
-        /* Message text styling */
-        .message-bubble p {
-            color: #303030 !important;
-            font-size: 15px !important;
-            line-height: 1.5 !important;
-            margin: 0 !important;
-            white-space: pre-line !important;
-        }
-        
-        /* Timestamp styling */
-        .message-time {
-            font-size: 11px !important;
-            color: #8c8c8c !important;
-            text-align: right !important;
-            margin-top: 2px !important;
-        }
-        
-        /* Chat container background */
-        .chat-container {
-            background-color: #f0f2f5;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 60px;  /* Space for input box */
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        /* Chat header styling */
-        .chat-header {
-            background-color: #075e54;
-            color: white;
-            padding: 10px 16px;
-            border-radius: 8px 8px 0 0;
-            display: flex;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .chat-title {
-            margin-left: 10px;
+        /* User and assistant labels */
+        .stChatMessage div:first-child {
+            color: #666 !important;
             font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 4px;
         }
         
         /* Chat input styling */
-        .stTextInput > div > div > input {
+        .stTextInput>div>div>input {
+            font-size: 15px;
+            color: #333 !important;
             background-color: white !important;
-            border-radius: 20px !important;
-            border: none !important;
-            padding: 10px 15px !important;
-            font-size: 15px !important;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
         
         /* Sidebar styles */
         .sidebar .sidebar-content {
             background-color: white;
             color: #333 !important;
+            border-right: 1px solid #f0f0f0;
         }
         
         .sidebar .stButton>button {
@@ -341,56 +289,61 @@ def set_ui_styling():
             font-weight: 600;
         }
         
-        /* Footer styling */
-        .footer {
-            position: fixed;
-            bottom: 0;
-            right: 0;
-            padding: 10px;
-            font-size: 12px;
-            color: #888;
-            background-color: rgba(255, 255, 255, 0.7);
-            border-radius: 4px 0 0 0;
+        /* Chat container styling */
+        .stChatContainer {
+            padding: 10px 0;
+        }
+        
+        /* Custom container for chat layout */
+        .chat-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Quick reply buttons styling */
+        .quick-reply-btn {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 6px 12px;
+            margin: 4px 0;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: left;
+            display: block;
+            width: 100%;
+        }
+        
+        .quick-reply-btn:hover {
+            background-color: #e9e9e9;
+        }
+        
+        /* Navbar styling */
+        .navbar {
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 1rem;
+        }
+        
+        .navbar-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+            margin-left: 0.5rem;
         }
         </style>""",
         unsafe_allow_html=True
     )
 
-# Custom function to display messages in WhatsApp style
-def display_messages(messages):
-    for message in messages:
-        role = message["role"]
-        content = message["content"]
-        
-        # Create message with custom styling
-        if role == "user":
-            st.markdown(
-                f"""
-                <div class="stChatMessage" data-testid="user-message">
-                    <div class="message-bubble">
-                        <p>{content}</p>
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-        else:
-            st.markdown(
-                f"""
-                <div class="stChatMessage" data-testid="assistant-message">
-                    <div class="message-bubble">
-                        <p>{content}</p>
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
 def main():
     st.set_page_config(page_title="Echofix Support Assistant", layout="wide")
     init_auth()
 
-    # Set UI styling for WhatsApp-like interface
+    # Set UI styling for a clean, minimalist design
     set_ui_styling()
 
     # Initialize session state
@@ -425,28 +378,21 @@ def main():
                     response = get_response(new_message, selected_category)
                     st.session_state.messages.append({"role": "assistant", "content": response})
 
-    # Chat header
-    st.markdown(
-        """
-        <div class="chat-header">
-            <span style="font-size: 24px;">🤖</span>
-            <span class="chat-title">Echofix Support Assistant</span>
-        </div>
-        """, 
-        unsafe_allow_html=True
-    )
+    # Chat interface header
+    st.markdown('<div class="navbar"><span class="navbar-title">🤖 Echofix Support Assistant</span></div>', unsafe_allow_html=True)
     
-    # Chat container
+    # Chat interface in a centered container
     with st.container():
-        st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-        
-        # Custom display of messages in WhatsApp style
-        display_messages(st.session_state.messages)
-            
+        st.markdown('<div class="chat-wrapper">', unsafe_allow_html=True)
+        chat_container = st.container()
+        with chat_container:
+            for message in st.session_state.messages:
+                with st.chat_message(message["role"]):
+                    st.write(message["content"])
         st.markdown('</div>', unsafe_allow_html=True)
 
     # User input handling
-    if prompt := st.chat_input("Type a message..."):
+    if prompt := st.chat_input("Ask about your telecom services..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.session_state.processing = True
         st.rerun()
@@ -455,21 +401,18 @@ def main():
     if st.session_state.processing:
         last_message = st.session_state.messages[-1]
         if last_message["role"] == "user":
-            with st.spinner(""):
+            with st.spinner("Analyzing your query..."):
                 response = get_response(last_message["content"], selected_category)
                 st.session_state.messages.append({"role": "assistant", "content": response})
             st.session_state.processing = False
             st.rerun()
     
     # Footer
-    st.markdown(
-        """
-        <div class="footer">
-            Echofix Support © 2025
-        </div>
-        """, 
-        unsafe_allow_html=True
-    )
+    st.markdown("""
+    <div style="position: fixed; bottom: 0; right: 0; padding: 10px; font-size: 12px; color: #999;">
+        Echofix Support © 2025
+    </div>
+    """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
