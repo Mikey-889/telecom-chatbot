@@ -131,8 +131,7 @@ def is_query_in_context(query):
     telecom_keywords = [
         "sim", "network", "phone", "call", "data", "internet", "bill", 
         "plan", "recharge", "balance", "broadband", "wifi", "connection",
-        "signal", "coverage", "router", "modem", "payment", "voicemail", 
-        "activate", "setup", "not working", "failed", "issue", "problem"
+        "signal", "coverage", "router", "modem"
     ]
     return any(keyword in query.lower() for keyword in telecom_keywords)
 
@@ -168,13 +167,13 @@ def get_response(query, category=None):
     if category and category != "All Categories":
         category_data = FAQ_DATA[category]
         for key, data in category_data.items():
-            if any(q.lower() in query for q in data["query"]):
+            if any(q in query for q in data["query"]):
                 return data["response"]
     else:
         # Search all categories
         for category_data in FAQ_DATA.values():
             for key, data in category_data.items():
-                if any(q.lower() in query for q in data["query"]):
+                if any(q in query for q in data["query"]):
                     return data["response"]
     
     # If no match found in FAQ, use RAG for telecom-specific response
@@ -207,29 +206,27 @@ def set_ui_styling():
         
         /* Chat messages styling - auto width adjustment */
         .stChatMessage {
+            background-color: #f9f9f9 !important;
             border-radius: 12px;
             padding: 12px 16px;
             margin: 8px 0;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            max-width: 70%;
+            max-width: fit-content;
             display: inline-block;
-            clear: both;
         }
         
-        /* User message specific styling (right side) */
-        .stChatMessage[data-testid="user-chat-message"] {
+        /* User message specific styling */
+        .stChatMessageContent[data-testid="UserChatMessage"] {
             background-color: #f0f7ff !important;
-            float: right;
-            margin-left: auto;
-            margin-right: 0;
+            border-radius: 12px;
+            padding: 2px;
         }
         
-        /* Assistant message specific styling (left side) */
-        .stChatMessage[data-testid="assistant-chat-message"] {
+        /* Assistant message specific styling */
+        .stChatMessageContent[data-testid="AssistantChatMessage"] {
             background-color: #f9f9f9 !important;
-            float: left;
-            margin-left: 0;
-            margin-right: auto;
+            border-radius: 12px;
+            padding: 2px;
         }
         
         /* Message text color */
@@ -416,6 +413,6 @@ def main():
         Echofix Support © 2025
     </div>
     """, unsafe_allow_html=True)
-    
+
 if __name__ == "__main__":
     main()
