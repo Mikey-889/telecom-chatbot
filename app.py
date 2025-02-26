@@ -131,8 +131,7 @@ def is_query_in_context(query):
     telecom_keywords = [
         "sim", "network", "phone", "call", "data", "internet", "bill", 
         "plan", "recharge", "balance", "broadband", "wifi", "connection",
-        "signal", "coverage", "router", "modem", "roaming", "payment", 
-        "voicemail"
+        "signal", "coverage", "router", "modem"
     ]
     return any(keyword in query.lower() for keyword in telecom_keywords)
 
@@ -205,44 +204,29 @@ def set_ui_styling():
             border: none;
         }
         
-        /* Chat messages container styling */
-        .stChatContainer {
-            padding: 10px 0;
-            max-width: 800px !important;
-            margin: 0 auto;
-        }
-        
-        /* Base styling for all chat messages */
+        /* Chat messages styling - auto width adjustment */
         .stChatMessage {
-            padding: 0 !important;
-            margin: 8px 0 !important;
-            max-width: 100% !important;
+            background-color: #f9f9f9 !important;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 8px 0;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            max-width: fit-content;
+            display: inline-block;
         }
         
-        /* User message positioning and styling */
+        /* User message specific styling */
         .stChatMessageContent[data-testid="UserChatMessage"] {
-            background-color: #E3F2FD !important;
-            border-radius: 18px 18px 0 18px !important;
-            padding: 10px 14px !important;
-            margin-left: auto !important;
-            margin-right: 0 !important;
-            max-width: 80% !important;
-            display: inline-block !important;
-            float: right !important;
-            clear: both !important;
+            background-color: #f0f7ff !important;
+            border-radius: 12px;
+            padding: 2px;
         }
         
-        /* Assistant message positioning and styling */
+        /* Assistant message specific styling */
         .stChatMessageContent[data-testid="AssistantChatMessage"] {
-            background-color: #F5F5F5 !important;
-            border-radius: 18px 18px 18px 0 !important;
-            padding: 10px 14px !important;
-            margin-right: auto !important;
-            margin-left: 0 !important;
-            max-width: 80% !important;
-            display: inline-block !important;
-            float: left !important;
-            clear: both !important;
+            background-color: #f9f9f9 !important;
+            border-radius: 12px;
+            padding: 2px;
         }
         
         /* Message text color */
@@ -253,15 +237,12 @@ def set_ui_styling():
             margin: 0;
         }
         
-        /* Hide the user and assistant labels for cleaner look */
+        /* User and assistant labels */
         .stChatMessage div:first-child {
-            display: none;
-        }
-        
-        /* Container to clear floats after messages */
-        .stChatContainer > div {
-            overflow: auto;
-            width: 100%;
+            color: #666 !important;
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 4px;
         }
         
         /* Chat input styling */
@@ -308,6 +289,17 @@ def set_ui_styling():
             font-weight: 600;
         }
         
+        /* Chat container styling */
+        .stChatContainer {
+            padding: 10px 0;
+        }
+        
+        /* Custom container for chat layout */
+        .chat-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
         /* Quick reply buttons styling */
         .quick-reply-btn {
             background-color: #f5f5f5;
@@ -342,20 +334,6 @@ def set_ui_styling():
             font-weight: 600;
             color: #333;
             margin-left: 0.5rem;
-        }
-        
-        /* Custom chat wrapper */
-        .chat-wrapper {
-            max-width: 800px;
-            margin: 0 auto;
-            clear: both;
-        }
-        
-        /* Fix for chat message container to clear floats */
-        .stChatContainer::after {
-            content: "";
-            display: table;
-            clear: both;
         }
         </style>""",
         unsafe_allow_html=True
