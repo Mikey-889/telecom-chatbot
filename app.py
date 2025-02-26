@@ -488,19 +488,26 @@ def render_landing_page():
     # Use Streamlit's built-in button with custom styling
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        st.markdown(
-            """
-            <div style="display: flex; justify-content: center; margin-top: 2rem;">
-                <button class="landing-btn" onclick="window.location.href='?page=chatbot'">Get Started</button>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        if st.button("Get Started", key="start_button"):
+            st.session_state.page = "chatbot"
+            st.rerun()
     
-    # Add a hidden button to trigger the page change
-    if st.button("Get Started", key="hidden_start_button", help="hidden", visible=False):
-        st.session_state.page = "chatbot"
-        st.rerun()
+    # Add CSS to ensure the landing page fits within the viewport
+    st.markdown(
+        """
+        <style>
+        .landing-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
 def render_chatbot():
     # Set chatbot UI styling
@@ -584,10 +591,7 @@ def main():
     
     # Display appropriate page based on state
     if st.session_state.page == "landing":
-        start_button = render_landing_page()
-        if start_button:
-            st.session_state.page = "chatbot"
-            st.rerun()
+        render_landing_page()
     else:
         render_chatbot()
 
