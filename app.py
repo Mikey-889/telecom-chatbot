@@ -471,7 +471,7 @@ def render_landing_page():
     set_landing_page_style()
     
     # Use a local image as the background
-    image_path = "bg-red.jpg"  # Replace with the path to your local image
+    image_path = "your_image.jpg"  # Replace with the path to your local image
     encoded_image = get_base64_of_bin_file(image_path)
     add_bg_from_url(f"data:image/jpg;base64,{encoded_image}")
     
@@ -486,17 +486,11 @@ def render_landing_page():
         unsafe_allow_html=True
     )
     
-    # Use Streamlit's built-in button with custom styling
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("Get Started", key="start_button"):
-            st.session_state.page = "chatbot"
-            st.rerun()
-    
-    # Add CSS to ensure the landing page fits within the viewport
+    # Add CSS to position the button manually
     st.markdown(
         """
         <style>
+        /* Ensure the landing page takes full height */
         .landing-container {
             height: 100vh;
             display: flex;
@@ -506,7 +500,13 @@ def render_landing_page():
             text-align: center;
             padding: 0 20px;
         }
-        .stButton>button {
+        
+        /* Position the button manually */
+        div.stButton > button {
+            position: absolute;
+            top: 60%; /* Adjust this value to move the button up or down */
+            left: 50%;
+            transform: translateX(-50%);
             background-color: #e53935;
             color: white;
             font-size: 1.2rem;
@@ -517,17 +517,22 @@ def render_landing_page():
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 100%;
         }
-        .stButton>button:hover {
+        
+        div.stButton > button:hover {
             background-color: #c62828;
-            transform: translateY(-2px);
+            transform: translateX(-50%) translateY(-2px);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
         </style>
         """,
         unsafe_allow_html=True
     )
+    
+    # Add the Streamlit button
+    if st.button("Get Started", key="start_button"):
+        st.session_state.page = "chatbot"
+        st.rerun()
         
 def render_chatbot():
     # Set chatbot UI styling
