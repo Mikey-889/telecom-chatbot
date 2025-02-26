@@ -471,7 +471,7 @@ def render_landing_page():
     set_landing_page_style()
     
     # Use a local image as the background
-    image_path = "bg-red.jpg"  # Replace with the path to your local image
+    image_path = "your_image.jpg"  # Replace with the path to your local image
     encoded_image = get_base64_of_bin_file(image_path)
     add_bg_from_url(f"data:image/jpg;base64,{encoded_image}")
     
@@ -481,6 +481,7 @@ def render_landing_page():
         <div class="landing-container">
             <h1 class="landing-title">Welcome to Echofix</h1>
             <p class="landing-subtitle">Your AI-powered telecom support assistant. Get instant answers to all your telecom queries.</p>
+            <div id="button-container"></div> <!-- Placeholder for the button -->
         </div>
         """,
         unsafe_allow_html=True
@@ -502,11 +503,11 @@ def render_landing_page():
         }
         
         /* Position the button manually */
+        #button-container {
+            margin-top: 2rem; /* Adjust this value to control spacing below the text */
+        }
+        
         div.stButton > button {
-            position: absolute;
-            top: 60%; /* Adjust this value to move the button up or down */
-            left: 50%;
-            transform: translateX(-50%);
             background-color: #e53935;
             color: white;
             font-size: 1.2rem;
@@ -521,10 +522,25 @@ def render_landing_page():
         
         div.stButton > button:hover {
             background-color: #c62828;
-            transform: translateX(-50%) translateY(-2px);
+            transform: translateY(-2px);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
         </style>
+        """,
+        unsafe_allow_html=True
+    )
+    
+    # Add the Streamlit button inside the placeholder
+    st.markdown(
+        """
+        <script>
+        // Move the button inside the placeholder
+        const button = document.querySelector("div.stButton > button");
+        const buttonContainer = document.getElementById("button-container");
+        if (button && buttonContainer) {
+            buttonContainer.appendChild(button);
+        }
+        </script>
         """,
         unsafe_allow_html=True
     )
