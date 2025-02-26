@@ -470,9 +470,10 @@ def render_landing_page():
     # Set landing page styling
     set_landing_page_style()
     
-    # Use a red background image
-    # Replace this URL with your actual background image URL
-    add_bg_from_url("https://images.unsplash.com/photo-1605379399642-870262d3d051?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2106&q=80")
+    # Use a local image as the background
+    image_path = "bg-red.jpg"  # Replace with the path to your local image
+    encoded_image = get_base64_of_bin_file(image_path)
+    add_bg_from_url(f"data:image/jpg;base64,{encoded_image}")
     
     # Create centered container for landing page content
     st.markdown(
@@ -480,17 +481,13 @@ def render_landing_page():
         <div class="landing-container">
             <h1 class="landing-title">Welcome to Echofix</h1>
             <p class="landing-subtitle">Your AI-powered telecom support assistant. Get instant answers to all your telecom queries.</p>
+            <div class="button-container">
+                <button class="landing-btn" onclick="window.location.href='?page=chatbot'">Get Started</button>
+            </div>
         </div>
         """,
         unsafe_allow_html=True
     )
-    
-    # Use Streamlit's built-in button with custom styling
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("Get Started", key="start_button"):
-            st.session_state.page = "chatbot"
-            st.rerun()
     
     # Add CSS to ensure the landing page fits within the viewport
     st.markdown(
@@ -503,12 +500,38 @@ def render_landing_page():
             justify-content: center;
             align-items: center;
             text-align: center;
+            padding: 0 20px;
+        }
+        .button-container {
+            margin-top: 2rem;
+        }
+        .landing-btn {
+            background-color: #e53935;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 12px 40px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .landing-btn:hover {
+            background-color: #c62828;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
         </style>
         """,
         unsafe_allow_html=True
     )
-
+    
+    # Add a hidden button to trigger the page change
+    if st.button("Get Started", key="hidden_start_button", help="hidden"):
+        st.session_state.page = "chatbot"
+        st.rerun()
+        
 def render_chatbot():
     # Set chatbot UI styling
     set_chatbot_styling()
