@@ -471,7 +471,7 @@ def render_landing_page():
     set_landing_page_style()
     
     # Use a local image as the background
-    image_path = "your_image.jpg"  # Replace with the path to your local image
+    image_path = "bg-red.jpg"  # Replace with the path to your local image
     encoded_image = get_base64_of_bin_file(image_path)
     add_bg_from_url(f"data:image/jpg;base64,{encoded_image}")
     
