@@ -205,42 +205,44 @@ def set_ui_styling():
             border: none;
         }
         
-        /* Chat container styling */
+        /* Chat messages container styling */
         .stChatContainer {
             padding: 10px 0;
+            max-width: 800px !important;
+            margin: 0 auto;
         }
         
-        /* General message styling */
+        /* Base styling for all chat messages */
         .stChatMessage {
-            background-color: transparent !important;
-            padding: 0;
-            margin: 8px 0;
-            max-width: 100%;
-            display: block;
+            padding: 0 !important;
+            margin: 8px 0 !important;
+            max-width: 100% !important;
         }
         
-        /* User message styling - RIGHT ALIGNED */
+        /* User message positioning and styling */
         .stChatMessageContent[data-testid="UserChatMessage"] {
-            background-color: #f0f7ff !important;
-            border-radius: 12px;
-            padding: 12px 16px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            float: right;
-            clear: both;
-            max-width: 80%;
-            display: inline-block;
+            background-color: #E3F2FD !important;
+            border-radius: 18px 18px 0 18px !important;
+            padding: 10px 14px !important;
+            margin-left: auto !important;
+            margin-right: 0 !important;
+            max-width: 80% !important;
+            display: inline-block !important;
+            float: right !important;
+            clear: both !important;
         }
         
-        /* Assistant message styling - LEFT ALIGNED */
+        /* Assistant message positioning and styling */
         .stChatMessageContent[data-testid="AssistantChatMessage"] {
-            background-color: #f9f9f9 !important;
-            border-radius: 12px;
-            padding: 12px 16px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            float: left;
-            clear: both;
-            max-width: 80%;
-            display: inline-block;
+            background-color: #F5F5F5 !important;
+            border-radius: 18px 18px 18px 0 !important;
+            padding: 10px 14px !important;
+            margin-right: auto !important;
+            margin-left: 0 !important;
+            max-width: 80% !important;
+            display: inline-block !important;
+            float: left !important;
+            clear: both !important;
         }
         
         /* Message text color */
@@ -251,16 +253,15 @@ def set_ui_styling():
             margin: 0;
         }
         
-        /* Hide user and assistant labels for cleaner look */
+        /* Hide the user and assistant labels for cleaner look */
         .stChatMessage div:first-child {
             display: none;
         }
         
-        /* Clear float after each message */
-        .stChatMessage::after {
-            content: "";
-            display: table;
-            clear: both;
+        /* Container to clear floats after messages */
+        .stChatContainer > div {
+            overflow: auto;
+            width: 100%;
         }
         
         /* Chat input styling */
@@ -307,12 +308,6 @@ def set_ui_styling():
             font-weight: 600;
         }
         
-        /* Custom container for chat layout */
-        .chat-wrapper {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
         /* Quick reply buttons styling */
         .quick-reply-btn {
             background-color: #f5f5f5;
@@ -348,9 +343,24 @@ def set_ui_styling():
             color: #333;
             margin-left: 0.5rem;
         }
+        
+        /* Custom chat wrapper */
+        .chat-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            clear: both;
+        }
+        
+        /* Fix for chat message container to clear floats */
+        .stChatContainer::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
         </style>""",
         unsafe_allow_html=True
     )
+
 def main():
     st.set_page_config(page_title="Echofix Support Assistant", layout="wide")
     init_auth()
