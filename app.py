@@ -488,9 +488,19 @@ def render_landing_page():
     # Use Streamlit's built-in button with custom styling
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        start_button = st.button("Get Started")
+        st.markdown(
+            """
+            <div style="display: flex; justify-content: center; margin-top: 2rem;">
+                <button class="landing-btn" onclick="window.location.href='?page=chatbot'">Get Started</button>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
     
-    return start_button
+    # Add a hidden button to trigger the page change
+    if st.button("Get Started", key="hidden_start_button", help="hidden", visible=False):
+        st.session_state.page = "chatbot"
+        st.rerun()
 
 def render_chatbot():
     # Set chatbot UI styling
