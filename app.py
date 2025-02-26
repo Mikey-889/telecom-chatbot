@@ -205,29 +205,42 @@ def set_ui_styling():
             border: none;
         }
         
-        /* Chat messages styling - auto width adjustment */
-        .stChatMessage {
-            background-color: #f9f9f9 !important;
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin: 8px 0;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            max-width: fit-content;
-            display: inline-block;
+        /* Chat container styling */
+        .stChatContainer {
+            padding: 10px 0;
         }
         
-        /* User message specific styling */
+        /* General message styling */
+        .stChatMessage {
+            background-color: transparent !important;
+            padding: 0;
+            margin: 8px 0;
+            max-width: 100%;
+            display: block;
+        }
+        
+        /* User message styling - RIGHT ALIGNED */
         .stChatMessageContent[data-testid="UserChatMessage"] {
             background-color: #f0f7ff !important;
             border-radius: 12px;
-            padding: 2px;
+            padding: 12px 16px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            float: right;
+            clear: both;
+            max-width: 80%;
+            display: inline-block;
         }
         
-        /* Assistant message specific styling */
+        /* Assistant message styling - LEFT ALIGNED */
         .stChatMessageContent[data-testid="AssistantChatMessage"] {
             background-color: #f9f9f9 !important;
             border-radius: 12px;
-            padding: 2px;
+            padding: 12px 16px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            float: left;
+            clear: both;
+            max-width: 80%;
+            display: inline-block;
         }
         
         /* Message text color */
@@ -238,12 +251,16 @@ def set_ui_styling():
             margin: 0;
         }
         
-        /* User and assistant labels */
+        /* Hide user and assistant labels for cleaner look */
         .stChatMessage div:first-child {
-            color: #666 !important;
-            font-weight: 500;
-            font-size: 14px;
-            margin-bottom: 4px;
+            display: none;
+        }
+        
+        /* Clear float after each message */
+        .stChatMessage::after {
+            content: "";
+            display: table;
+            clear: both;
         }
         
         /* Chat input styling */
@@ -290,11 +307,6 @@ def set_ui_styling():
             font-weight: 600;
         }
         
-        /* Chat container styling */
-        .stChatContainer {
-            padding: 10px 0;
-        }
-        
         /* Custom container for chat layout */
         .chat-wrapper {
             max-width: 800px;
@@ -339,7 +351,6 @@ def set_ui_styling():
         </style>""",
         unsafe_allow_html=True
     )
-
 def main():
     st.set_page_config(page_title="Echofix Support Assistant", layout="wide")
     init_auth()
