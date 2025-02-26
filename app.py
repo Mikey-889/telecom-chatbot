@@ -471,7 +471,7 @@ def render_landing_page():
     set_landing_page_style()
     
     # Use a local image as the background
-    image_path = "bg-red.jpg"  # Replace with the path to your local image
+    image_path = "your_image.jpg"  # Replace with the path to your local image
     encoded_image = get_base64_of_bin_file(image_path)
     add_bg_from_url(f"data:image/jpg;base64,{encoded_image}")
     
@@ -481,13 +481,17 @@ def render_landing_page():
         <div class="landing-container">
             <h1 class="landing-title">Welcome to Echofix</h1>
             <p class="landing-subtitle">Your AI-powered telecom support assistant. Get instant answers to all your telecom queries.</p>
-            <div class="button-container">
-                <button class="landing-btn" onclick="window.location.href='?page=chatbot'">Get Started</button>
-            </div>
         </div>
         """,
         unsafe_allow_html=True
     )
+    
+    # Use Streamlit's built-in button with custom styling
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("Get Started", key="start_button"):
+            st.session_state.page = "chatbot"
+            st.rerun()
     
     # Add CSS to ensure the landing page fits within the viewport
     st.markdown(
@@ -502,10 +506,7 @@ def render_landing_page():
             text-align: center;
             padding: 0 20px;
         }
-        .button-container {
-            margin-top: 2rem;
-        }
-        .landing-btn {
+        .stButton>button {
             background-color: #e53935;
             color: white;
             font-size: 1.2rem;
@@ -516,8 +517,9 @@ def render_landing_page():
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
         }
-        .landing-btn:hover {
+        .stButton>button:hover {
             background-color: #c62828;
             transform: translateY(-2px);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
@@ -526,11 +528,6 @@ def render_landing_page():
         """,
         unsafe_allow_html=True
     )
-    
-    # Add a hidden button to trigger the page change
-    if st.button("Get Started", key="hidden_start_button", help="hidden"):
-        st.session_state.page = "chatbot"
-        st.rerun()
         
 def render_chatbot():
     # Set chatbot UI styling
