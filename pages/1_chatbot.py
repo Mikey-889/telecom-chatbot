@@ -5,6 +5,13 @@ from huggingface_hub import login
 from sentence_transformers import SentenceTransformer, util
 import numpy as np
 
+st.set_page_config(
+    page_title="Echofix Support Assistant", 
+    page_icon="🤖",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 # Initialize Hugging Face authentication
 @st.cache_resource
 def init_auth():
