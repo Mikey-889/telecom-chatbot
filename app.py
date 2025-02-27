@@ -187,20 +187,19 @@ def get_response(query, category=None):
         return f"Error generating response: {str(e)}"
 
 # Function to add background image
+# Update the add_bg_from_url function
 def add_bg_from_url(image_url):
     st.markdown(
         f"""
         <style>
-        /* Update the background style */
-        .stApp {
+        .stApp {{
             background-image: url("{image_url}");
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
             background-attachment: fixed;
-            height: 100vh;
-            overflow: auto; /* Allow scrolling only if content exceeds viewport */
-        }
+            min-height: 100vh;
+        }}
         </style>
         """,
         unsafe_allow_html=True
