@@ -196,7 +196,7 @@ def add_bg_from_url(image_url):
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            height: 100vh;
+            height: 100%;
         }}
         </style>
         """,
