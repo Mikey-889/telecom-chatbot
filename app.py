@@ -196,7 +196,7 @@ def add_bg_from_url(image_url):
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            height: 100%;
+            height: 100vh;
         }}
         </style>
         """,
@@ -473,7 +473,7 @@ def render_landing_page():
     # Use a local image as the background
     image_path = "bg.png"  # Replace with the path to your local image
     encoded_image = get_base64_of_bin_file(image_path)
-    add_bg_from_url(f"data:image/jpg;base64,{encoded_image}")
+    add_bg_from_url(f"data:image/png;base64,{encoded_image}")
     
     # Create centered container for landing page content
     st.markdown(
