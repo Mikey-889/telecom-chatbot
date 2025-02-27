@@ -191,13 +191,16 @@ def add_bg_from_url(image_url):
     st.markdown(
         f"""
         <style>
-        .stApp {{
+        /* Update the background style */
+        .stApp {
             background-image: url("{image_url}");
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
             background-attachment: fixed;
-        }}
+            height: 100vh;
+            overflow: auto; /* Allow scrolling only if content exceeds viewport */
+        }
         </style>
         """,
         unsafe_allow_html=True
@@ -229,41 +232,35 @@ def set_landing_page_style():
         }
         
         /* Landing Page Styling */
+        /* Update the existing .landing-container style */
         .landing-container {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            height: 100vh;  /* Full viewport height */
+            min-height: 100vh; /* Ensure minimum height */
             text-align: center;
             padding: 20px;
             position: relative;
             z-index: 1;
+            margin: 0; /* Remove any default margins */
         }
         
-        
-        /* Button container styling */
+        /* Add this new style for the button container */
         #button-container {
             position: relative;
             z-index: 2;
             margin-top: 0;
+            transform: translateY(-50%); /* Fine-tune vertical position */
         }
-        
+                
         /* Streamlit button override */
         div.stButton > button {
-            background-color: #e53935;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 600;
-            padding: 12px 40px;
-            border-radius: 30px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: auto;
-            margin: 0 auto;
-            display: block;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-top: 0;
         }
         
         /* Hide default Streamlit elements */
