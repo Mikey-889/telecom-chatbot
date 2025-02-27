@@ -523,7 +523,7 @@ def render_chatbot():
                     st.session_state.messages.append({"role": "assistant", "content": response})
 
     # Chat interface header with logo
-    st.markdown('<div class="navbar"><span class="navbar-title">🤖 Echofix Support Assistant</span></div>', unsafe_allow_html=True)
+    st.markdown('<div class="navbar"><span class="navbar-title">🤖 EchoFIX Support Assistant</span></div>', unsafe_allow_html=True)
     
     # Chat interface in a centered container
     with st.container():
