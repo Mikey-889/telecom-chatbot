@@ -4,7 +4,6 @@ import torch
 from huggingface_hub import login
 from sentence_transformers import SentenceTransformer, util
 import numpy as np
-import base64
 
 # Initialize Hugging Face authentication
 @st.cache_resource
@@ -186,125 +185,8 @@ def get_response(query, category=None):
     except Exception as e:
         return f"Error generating response: {str(e)}"
 
-# Function to add background image
-def add_bg_from_url(image_url):
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("{image_url}");
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            max-height: 100%;
-            width: 100%
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-# Function to use local image as base64
-def get_base64_of_bin_file(bin_file):
-    with open(bin_file, 'rb') as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
-
-def set_landing_page_style():
-    st.markdown(
-        """
-        <style>
-        /* Landing Page Styling */
-        .stApp {
-            background-color: #ffeeee;  /* Light red background as fallback */
-        }
-        
-        .landing-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-            padding: 0 20px;
-        }
-        
-        .landing-title {
-            font-size: 3.5rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 2rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-        
-        .landing-subtitle {
-            font-size: 1.5rem;
-            font-weight: 400;
-            color: white;
-            margin-bottom: 3rem;
-            max-width: 600px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-        }
-        
-        .landing-btn {
-            background-color: #e53935;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 600;
-            padding: 12px 40px;
-            border-radius: 30px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .landing-btn:hover {
-            background-color: #c62828;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-        
-        /* Hide Streamlit elements on landing page */
-        .landing-page div.stButton > button:first-child:hover {
-            border-color: transparent;
-            transform: translateY(-2px);
-        }
-        
-        div.block-container {
-            padding-top: 0;
-            padding-bottom: 0;
-            max-width: 100%;
-        }
-        
-        #MainMenu, footer, header {
-            visibility: hidden;
-        }
-        
-        /* Override Streamlit's default button styling */
-        div.stButton > button:first-child {
-            background-color: #e53935;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 600;
-            padding: 12px 40px;
-            border-radius: 30px;
-            border: none;
-            width: auto;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        div.stButton > button:first-child:hover {
-            background-color: #c62828;
-            color: white;
-            border-color: transparent;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-def set_chatbot_styling():
+# Set UI styling for a clean, minimalist design
+def set_ui_styling():
     st.markdown(
         """<style>
         /* Clean white background */
@@ -446,7 +328,6 @@ def set_chatbot_styling():
             align-items: center;
             border-bottom: 1px solid #f0f0f0;
             margin-bottom: 1rem;
-            background-color: #f8f8f8;
         }
         
         .navbar-title {
@@ -455,114 +336,25 @@ def set_chatbot_styling():
             color: #333;
             margin-left: 0.5rem;
         }
-        
-        /* Logo styling */
-        .logo-text {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #e53935;
-            margin-right: 1rem;
-        }
         </style>""",
         unsafe_allow_html=True
     )
 
-def render_landing_page():
-    # Set landing page styling
-    set_landing_page_style()
-    
-    # Use a local image as the background
-    image_path = "bg.png"  # Replace with the path to your local image
-    encoded_image = get_base64_of_bin_file(image_path)
-    add_bg_from_url(f"data:image/png;base64,{encoded_image}")
-    
-    # Create centered container for landing page content
-    st.markdown(
-        """
-        <div class="landing-container">
-            <h1 class="landing-title">Welcome to Echofix</h1>
-            <p class="landing-subtitle">Your AI-powered telecom support assistant. Get instant answers to all your telecom queries.</p>
-            <div id="button-container"></div> <!-- Placeholder for the button -->
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-    
-    # Add CSS to position the button manually
-    st.markdown(
-        """
-        <style>
-        /* Ensure the landing page takes full height */
-        .landing-container {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 20px;
-        }
-        
-        /* Position the button manually */
-        #button-container {
-            margin-top: 2rem; /* Adjust this value to control spacing below the text */
-        }
-        
-        div.stButton > button {
-            background-color: #e53935;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 600;
-            padding: 12px 40px;
-            border-radius: 30px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        div.stButton > button:hover {
-            background-color: #c62828;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-    
-    # Add the Streamlit button inside the placeholder
-    st.markdown(
-        """
-        <script>
-        // Move the button inside the placeholder
-        const button = document.querySelector("div.stButton > button");
-        const buttonContainer = document.getElementById("button-container");
-        if (button && buttonContainer) {
-            buttonContainer.appendChild(button);
-        }
-        </script>
-        """,
-        unsafe_allow_html=True
-    )
-    
-    # Add the Streamlit button
-    if st.button("Get Started", key="start_button"):
-        st.session_state.page = "chatbot"
-        st.rerun()
-        
-def render_chatbot():
-    # Set chatbot UI styling
-    set_chatbot_styling()
-    
-    # Initialize session state for the chatbot
+def main():
+    st.set_page_config(page_title="Echofix Support Assistant", layout="wide")
+    init_auth()
+
+    # Set UI styling for a clean, minimalist design
+    set_ui_styling()
+
+    # Initialize session state
     if "messages" not in st.session_state:
         st.session_state.messages = [
             {"role": "assistant", "content": "👋 Hi there! I'm your Echofix Support Assistant. How can I help you today?"}
         ]
     if "processing" not in st.session_state:
         st.session_state.processing = False
-    
+
     # Sidebar for category selection and quick replies
     with st.sidebar:
         st.markdown('<h3 style="margin-top: 0;">Filters</h3>', unsafe_allow_html=True)
@@ -587,8 +379,8 @@ def render_chatbot():
                     response = get_response(new_message, selected_category)
                     st.session_state.messages.append({"role": "assistant", "content": response})
 
-    # Chat interface header with logo
-    st.markdown('<div class="navbar"><span class="logo-text">Echofix</span><span class="navbar-title">Support Assistant</span></div>', unsafe_allow_html=True)
+    # Chat interface header
+    st.markdown('<div class="navbar"><span class="navbar-title">🤖 Echofix Support Assistant</span></div>', unsafe_allow_html=True)
     
     # Chat interface in a centered container
     with st.container():
@@ -619,23 +411,9 @@ def render_chatbot():
     # Footer
     st.markdown("""
     <div style="position: fixed; bottom: 0; right: 0; padding: 10px; font-size: 12px; color: #999;">
-        Echofix Support © 
+        Echofix Support © 2025
     </div>
     """, unsafe_allow_html=True)
-
-def main():
-    st.set_page_config(page_title="Echofix Support Assistant", layout="wide")
-    init_auth()
-    
-    # Initialize session state for page navigation
-    if "page" not in st.session_state:
-        st.session_state.page = "landing"
-    
-    # Display appropriate page based on state
-    if st.session_state.page == "landing":
-        render_landing_page()
-    else:
-        render_chatbot()
 
 if __name__ == "__main__":
     main()
