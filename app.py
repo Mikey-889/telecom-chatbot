@@ -193,7 +193,7 @@ def add_bg_from_url(image_url):
         <style>
         .stApp {{
             background-image: url("{image_url}");
-            background-size: cover;
+            background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
             height: 100vh;
