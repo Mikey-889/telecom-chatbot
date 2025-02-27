@@ -246,7 +246,7 @@ def set_landing_page_style():
         #button-container {
             position: relative;
             z-index: 2;
-            margin-top: 0;
+            margin-top: -25vh;
         }
         
         /* Streamlit button override */
