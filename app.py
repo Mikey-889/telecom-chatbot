@@ -241,22 +241,6 @@ def set_landing_page_style():
             z-index: 1;
         }
         
-        .landing-title {
-            font-size: 3.5rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 1.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-        
-        .landing-subtitle {
-            font-size: 1.5rem;
-            font-weight: 400;
-            color: white;
-            margin-bottom: 2.5rem;
-            max-width: 600px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-        }
         
         /* Button container styling */
         #button-container {
@@ -472,8 +456,6 @@ def render_landing_page():
     st.markdown(
         """
         <div class="landing-container">
-            <h1 class="landing-title">Welcome to Echofix</h1>
-            <p class="landing-subtitle">Your AI-powered telecom support assistant. Get instant answers to all your telecom queries.</p>
             <div id="button-container">
         """,
         unsafe_allow_html=True
