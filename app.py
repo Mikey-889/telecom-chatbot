@@ -424,7 +424,6 @@ def set_chatbot_styling():
             align-items: center;
             border-bottom: 1px solid #f0f0f0;
             margin-bottom: 1rem;
-            background-color: #f8f8f8;
         }
         
         .navbar-title {
@@ -524,7 +523,7 @@ def render_chatbot():
                     st.session_state.messages.append({"role": "assistant", "content": response})
 
     # Chat interface header with logo
-    st.markdown('<div class="navbar"><span class="logo-text">🤖 EchoFIX</span><span class="navbar-title">Support Assistant</span></div>', unsafe_allow_html=True)
+    st.markdown('<div class="navbar"><span class="navbar-title">🤖 Echofix Support Assistant</span></div>', unsafe_allow_html=True)
     
     # Chat interface in a centered container
     with st.container():
