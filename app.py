@@ -6,6 +6,8 @@ from sentence_transformers import SentenceTransformer, util
 import numpy as np
 import base64
 
+st.set_page_config(page_title="Echofix Support Assistant", layout="wide")
+
 # Initialize Hugging Face authentication
 @st.cache_resource
 def init_auth():
@@ -558,7 +560,6 @@ def render_chatbot():
     """, unsafe_allow_html=True)
 
 def main():
-    st.set_page_config(page_title="Echofix Support Assistant", layout="wide")
     init_auth()
     
     # Initialize session state for page navigation
