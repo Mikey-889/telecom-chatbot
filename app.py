@@ -9,7 +9,7 @@ import base64
 # Initialize Hugging Face authentication
 @st.cache_resource
 def init_auth():
-    login(token=st.secrets["HUGGING_FACE_TOKEN"])
+  login(token=st.secrets["HUGGING_FACE_TOKEN"])
 
 # Load model with device_map and quantization for faster inference
 @st.cache_resource
