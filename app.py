@@ -194,9 +194,9 @@ def add_bg_from_url(image_url):
         .stApp {{
             background-image: url("{image_url}");
             background-size: cover;
-            background-position: center;
+            background-position: center center;
             background-repeat: no-repeat;
-            height: 100vh;
+            background-attachment: fixed;
         }}
         </style>
         """,
@@ -213,11 +213,22 @@ def set_landing_page_style():
     st.markdown(
         """
         <style>
-        /* Landing Page Styling */
-        .stApp {
-            background-color: #ffeeee;  /* Light red background as fallback */
+        /* Reset default margins and padding */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
         }
         
+        /* Full height app container */
+        .stApp {
+            height: 100vh;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+        
+        /* Landing Page Styling */
         .landing-container {
             display: flex;
             flex-direction: column;
@@ -225,14 +236,16 @@ def set_landing_page_style():
             align-items: center;
             height: 100vh;
             text-align: center;
-            padding: 0 20px;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
         }
         
         .landing-title {
             font-size: 3.5rem;
             font-weight: 700;
             color: white;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
         
@@ -240,12 +253,20 @@ def set_landing_page_style():
             font-size: 1.5rem;
             font-weight: 400;
             color: white;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
             max-width: 600px;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
         
-        .landing-btn {
+        /* Button container styling */
+        #button-container {
+            position: relative;
+            z-index: 2;
+            margin-top: 0;
+        }
+        
+        /* Streamlit button override */
+        div.stButton > button {
             background-color: #e53935;
             color: white;
             font-size: 1.2rem;
@@ -256,47 +277,19 @@ def set_landing_page_style():
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: auto;
+            margin: 0 auto;
+            display: block;
         }
         
-        .landing-btn:hover {
-            background-color: #c62828;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-        
-        /* Hide Streamlit elements on landing page */
-        .landing-page div.stButton > button:first-child:hover {
-            border-color: transparent;
-            transform: translateY(-2px);
-        }
-        
-        div.block-container {
-            padding-top: 0;
-            padding-bottom: 0;
-            max-width: 100%;
-        }
-        
+        /* Hide default Streamlit elements */
         #MainMenu, footer, header {
             visibility: hidden;
         }
         
-        /* Override Streamlit's default button styling */
-        div.stButton > button:first-child {
-            background-color: #e53935;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 600;
-            padding: 12px 40px;
-            border-radius: 30px;
-            border: none;
-            width: auto;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        div.stButton > button:first-child:hover {
-            background-color: #c62828;
-            color: white;
-            border-color: transparent;
+        /* Background image styling */
+        .stApp > [data-testid="stAppViewContainer"] {
+            overflow: hidden;
         }
         </style>
         """,
@@ -481,66 +474,7 @@ def render_landing_page():
         <div class="landing-container">
             <h1 class="landing-title">Welcome to Echofix</h1>
             <p class="landing-subtitle">Your AI-powered telecom support assistant. Get instant answers to all your telecom queries.</p>
-            <div id="button-container"></div> <!-- Placeholder for the button -->
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-    
-    # Add CSS to position the button manually
-    st.markdown(
-        """
-        <style>
-        /* Ensure the landing page takes full height */
-        .landing-container {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 20px;
-        }
-        
-        /* Position the button manually */
-        #button-container {
-            margin-top: 2rem; /* Adjust this value to control spacing below the text */
-        }
-        
-        div.stButton > button {
-            background-color: #e53935;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 600;
-            padding: 12px 40px;
-            border-radius: 30px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        div.stButton > button:hover {
-            background-color: #c62828;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-    
-    # Add the Streamlit button inside the placeholder
-    st.markdown(
-        """
-        <script>
-        // Move the button inside the placeholder
-        const button = document.querySelector("div.stButton > button");
-        const buttonContainer = document.getElementById("button-container");
-        if (button && buttonContainer) {
-            buttonContainer.appendChild(button);
-        }
-        </script>
+            <div id="button-container">
         """,
         unsafe_allow_html=True
     )
@@ -549,7 +483,26 @@ def render_landing_page():
     if st.button("Get Started", key="start_button"):
         st.session_state.page = "chatbot"
         st.rerun()
-        
+    
+    st.markdown("</div></div>", unsafe_allow_html=True)
+    
+    # JavaScript to ensure proper layout
+    st.markdown(
+        """
+        <script>
+        // Ensure the app container fills the viewport
+        setTimeout(() => {
+            const appContainer = document.querySelector('.stApp');
+            if (appContainer) {
+                appContainer.style.height = '100vh';
+                appContainer.style.overflow = 'hidden';
+            }
+        }, 100);
+        </script>
+        """,
+        unsafe_allow_html=True
+    )
+    
 def render_chatbot():
     # Set chatbot UI styling
     set_chatbot_styling()
