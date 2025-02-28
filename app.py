@@ -231,18 +231,6 @@ def set_landing_page_style():
         }
         
         /* Landing Page Styling */
-        .landing-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-            padding: 20px;
-            position: relative;
-            z-index: 1;
-        }
-        
         
         /* Button container styling */
         #button-container {
@@ -452,15 +440,6 @@ def render_landing_page():
     image_path = "bg.png"  # Replace with the path to your local image
     encoded_image = get_base64_of_bin_file(image_path)
     add_bg_from_url(f"data:image/jpg;base64,{encoded_image}")
-    
-    # Create centered container for landing page content
-    st.markdown(
-        """
-        <div class="landing-container">
-            <div id="button-container">
-        """,
-        unsafe_allow_html=True
-    )
     
     # Add the Streamlit button
     if st.button("Get Started", key="start_button"):
