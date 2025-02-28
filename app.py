@@ -243,8 +243,8 @@ def set_landing_page_style():
         div.stButton > button {
             background-color: #e53935;
             color: white;
-            font-size: 1.2rem;
-            font-weight: 600;
+            font-size: 2rem;
+            font-weight: 700;
             padding: 18px 50px;
             border-radius: 30px;
             border: none;
@@ -252,7 +252,7 @@ def set_landing_page_style():
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: auto;
-            margin: 50px auto;
+            margin: 150px auto;
             display: block;
         }
         
