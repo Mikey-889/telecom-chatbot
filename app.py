@@ -243,16 +243,16 @@ def set_landing_page_style():
         div.stButton > button {
             background-color: #e53935;
             color: white;
-            font-size: 2rem;
-            font-weight: 700;
-            padding: 18px 50px;
+            font-size: 3rem;
+            font-weight: 800;
+            padding: 20px 55px;
             border-radius: 30px;
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: auto;
-            margin: 150px auto;
+            margin: 30% auto;
             display: block;
         }
         
