@@ -252,7 +252,7 @@ def set_landing_page_style():
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: auto;
-            margin: 5% auto !important; 
+            margin: 8% auto !important; 
             display: block;
         }
         
