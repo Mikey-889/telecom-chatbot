@@ -428,6 +428,45 @@ def set_chatbot_styling():
             color: #e53935;
             margin-right: 1rem;
         }
+
+        /* Enhanced sidebar styling */
+        .sidebar .stExpander {
+            border: none;
+            box-shadow: none;
+            margin-bottom: 10px;
+        }
+        
+        .sidebar .stExpander > div:first-child {
+            border: none;
+            background-color: #f8f8f8;
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+        
+        .sidebar .stExpander > div:first-child p {
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .sidebar .stTabs {
+            background-color: transparent;
+        }
+        
+        .sidebar .stTabs > div:first-child {
+            background-color: #f8f8f8;
+            border-radius: 6px;
+        }
+        
+        .sidebar .stTextInput > div > div > input {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+        
+        .sidebar a:hover {
+            background-color: #f0f0f0 !important;
+            border-left: 3px solid #e53935 !important;
+        }
         </style>""",
         unsafe_allow_html=True
     )
@@ -479,27 +518,107 @@ def render_chatbot():
     
     # Sidebar for category selection and quick replies
     with st.sidebar:
-        st.markdown('<h3 style="margin-top: 0;">Filters</h3>', unsafe_allow_html=True)
-        categories = ["All Categories"] + list(FAQ_DATA.keys())
-        selected_category = st.selectbox("Select Category", categories)
+        st.markdown('<h3 style="margin-top: 0;">Support Navigation</h3>', unsafe_allow_html=True)
+        
+        # Add a search box for filtering
+        search_query = st.text_input("Search support topics", "")
+        
+        # Add tabs for different views
+        tab1, tab2 = st.tabs(["Categories", "All Topics"])
+        
+        with tab1:
+            # Get query parameters to highlight active category
+            query_params = st.experimental_get_query_params()
+            active_category = query_params.get("category", [""])[0]
+            
+            # Categories as expandable sections
+            for category_name, category_data in FAQ_DATA.items():
+                is_active = active_category == category_name.lower().replace(" ", "_")
+                expanded = is_active or not active_category
+                
+                with st.expander(category_name, expanded=expanded):
+                    for key, item in category_data.items():
+                        # Filter based on search query if provided
+                        if search_query and search_query.lower() not in item["quick_reply"].lower():
+                            continue
+                            
+                        # Create a unique key for each button
+                        button_key = f"{category_name}_{key}"
+                        
+                        # Create a container for custom styling
+                        link_container = st.container()
+                        
+                        # Add the link button with HTML for better styling
+                        query_param = key.lower()
+                        link_html = f"""
+                        <a href="?category={category_name.lower().replace(' ', '_')}&query={query_param}" 
+                           style="display: block; padding: 8px 10px; margin: 5px 0; 
+                                  background-color: {'#f0f0f0' if is_active and query_param == query_params.get('query', [''])[0] else '#f8f8f8'}; 
+                                  border-radius: 4px; text-decoration: none; color: #333; 
+                                  border-left: 3px solid {'#e53935' if is_active and query_param == query_params.get('query', [''])[0] else 'transparent'};">
+                            {item["quick_reply"]}
+                        </a>
+                        """
+                        link_container.markdown(link_html, unsafe_allow_html=True)
+        
+        with tab2:
+            # Flat list of all topics sorted alphabetically
+            all_topics = []
+            for category_name, category_data in FAQ_DATA.items():
+                for key, item in category_data.items():
+                    all_topics.append({
+                        "category": category_name,
+                        "key": key,
+                        "title": item["quick_reply"]
+                    })
+            
+            # Sort topics alphabetically
+            all_topics.sort(key=lambda x: x["title"])
+            
+            # Filter based on search query
+            if search_query:
+                all_topics = [topic for topic in all_topics if search_query.lower() in topic["title"].lower()]
+            
+            # Display as a flat list
+            for topic in all_topics:
+                query_param = topic["key"].lower()
+                category_param = topic["category"].lower().replace(" ", "_")
+                
+                link_html = f"""
+                <a href="?category={category_param}&query={query_param}" 
+                   style="display: block; padding: 8px 10px; margin: 5px 0; 
+                          background-color: #f8f8f8; border-radius: 4px; 
+                          text-decoration: none; color: #333;">
+                    {topic["title"]} <span style="color: #999; font-size: 12px;">({topic["category"]})</span>
+                </a>
+                """
+                st.markdown(link_html, unsafe_allow_html=True)
 
-        st.markdown('<h3>Quick Replies</h3>', unsafe_allow_html=True)
-        if selected_category == "All Categories":
-            for category_name, category in FAQ_DATA.items():
-                st.markdown(f'<p style="color: #666; font-size: 14px; margin-top: 10px; margin-bottom: 5px;">{category_name}</p>', unsafe_allow_html=True)
-                for item in category.values():
-                    if st.button(item["quick_reply"], key=item["quick_reply"]):
-                        new_message = item["query"][0]
-                        st.session_state.messages.append({"role": "user", "content": new_message})
-                        response = get_response(new_message, selected_category)
-                        st.session_state.messages.append({"role": "assistant", "content": response})
-        else:
-            for item in FAQ_DATA[selected_category].values():
-                if st.button(item["quick_reply"], key=item["quick_reply"]):
-                    new_message = item["query"][0]
-                    st.session_state.messages.append({"role": "user", "content": new_message})
-                    response = get_response(new_message, selected_category)
-                    st.session_state.messages.append({"role": "assistant", "content": response})
+    # Handle query parameters for direct links
+    query_params = st.experimental_get_query_params()
+    if "query" in query_params and "category" in query_params:
+        if query_params["query"][0] not in st.session_state.get("processed_queries", []):
+            query_type = query_params["query"][0]
+            category = query_params["category"][0].replace("_", " ").title()
+            
+            # Find the matching query in FAQ_DATA
+            query_text = ""
+            if category in FAQ_DATA:
+                for key, item in FAQ_DATA[category].items():
+                    if key.lower() == query_type:
+                        query_text = item["query"][0]
+                        break
+            
+            if query_text:
+                # Process the query from URL parameter
+                st.session_state.messages.append({"role": "user", "content": query_text})
+                response = get_response(query_text, category)
+                st.session_state.messages.append({"role": "assistant", "content": response})
+                
+                # Store processed query to avoid reprocessing on refresh
+                if "processed_queries" not in st.session_state:
+                    st.session_state.processed_queries = []
+                st.session_state.processed_queries.append(query_type)
 
     # Chat interface header with logo
     st.markdown('<div class="navbar"><span class="navbar-title">🤖 EchoFIX Support Assistant</span></div>', unsafe_allow_html=True)
