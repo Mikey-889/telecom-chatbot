@@ -605,6 +605,38 @@ def render_chatbot():
 
     # Chat interface header with logo
     st.markdown('<div class="navbar"><span class="navbar-title">🤖 EchoFIX Support Assistant</span></div>', unsafe_allow_html=True)
+
+    with st.container():
+        st.markdown('<div class="chat-wrapper">', unsafe_allow_html=True)
+        chat_container = st.container()
+        with chat_container:
+            for message in st.session_state.messages:
+                with st.chat_message(message["role"]):
+                    st.write(message["content"])
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # User input handling
+    if prompt := st.chat_input("Ask about your telecom services..."):
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        st.session_state.processing = True
+        st.rerun()
+
+    # Response generation handling
+    if st.session_state.processing:
+        last_message = st.session_state.messages[-1]
+        if last_message["role"] == "user":
+            with st.spinner("Analyzing your query..."):
+                response = get_response(last_message["content"], selected_category)
+                st.session_state.messages.append({"role": "assistant", "content": response})
+            st.session_state.processing = False
+            st.rerun()
+    
+    # Footer
+    st.markdown("""
+    <div style="position: fixed; bottom: 0; right: 0; padding: 10px; font-size: 12px; color: #999;">
+        🤖 EchoFIX Support Assistant  
+    </div>
+    """, unsafe_allow_html=True)
     
 def main():
     init_auth()
