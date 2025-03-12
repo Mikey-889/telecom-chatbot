@@ -568,59 +568,44 @@ def render_chatbot():
         
         # Tab 3: External Links (new)
         with tab3:
-            # SIM Services Links
-            st.markdown("#### SIM Services")
-            st.markdown('[SIM Not Working](https://www.google.com/search?q=sim+not+working)', unsafe_allow_html=True)
-            st.markdown('[Replace SIM](https://www.google.com/search?q=replace+sim+card)', unsafe_allow_html=True)
-            st.markdown('[International Roaming](https://www.google.com/search?q=activate+international+roaming)', unsafe_allow_html=True)
+            # Define links by category
+            links = {
+                "SIM Services": [
+                    {"title": "SIM Not Working", "url": "https://www.google.com/search?q=sim+not+working"},
+                    {"title": "Replace SIM", "url": "https://www.google.com/search?q=replace+sim+card"},
+                    {"title": "International Roaming", "url": "https://www.google.com/search?q=activate+international+roaming"}
+                ],
+                "Internet Services": [
+                    {"title": "Broadband Issues", "url": "https://www.google.com/search?q=troubleshoot+broadband+issues"},
+                    {"title": "Slow Internet", "url": "https://www.google.com/search?q=fix+slow+internet"},
+                    {"title": "WiFi Setup", "url": "https://www.google.com/search?q=wifi+router+setup+guide"}
+                ],
+                "Billing": [
+                    {"title": "Check Bill", "url": "https://www.google.com/search?q=online+bill+payment"},
+                    {"title": "Payment Issues", "url": "https://www.google.com/search?q=payment+failed+troubleshooting"},
+                    {"title": "Change Plan", "url": "https://www.google.com/search?q=change+mobile+plan"}
+                ]
+            }
             
-            # Internet Services Links
-            st.markdown("#### Internet Services")
-            st.markdown('[Broadband Issues](https://www.google.com/search?q=troubleshoot+broadband+issues)', unsafe_allow_html=True)
-            st.markdown('[Slow Internet](https://www.google.com/search?q=fix+slow+internet)', unsafe_allow_html=True)
-            st.markdown('[WiFi Setup](https://www.google.com/search?q=wifi+router+setup+guide)', unsafe_allow_html=True)
-            
-            # Billing Links
-            st.markdown("#### Billing")
-            st.markdown('[Check Bill](https://www.google.com/search?q=online+bill+payment)', unsafe_allow_html=True)
-            st.markdown('[Payment Issues](https://www.google.com/search?q=payment+failed+troubleshooting)', unsafe_allow_html=True)
-            st.markdown('[Change Plan](https://www.google.com/search?q=change+mobile+plan)', unsafe_allow_html=True)
+            # Display links based on selected category
+            if selected_category == "All Categories":
+                # Show all links by category
+                for category_name, category_links in links.items():
+                    st.markdown(f"#### {category_name}")
+                    for link in category_links:
+                        st.markdown(f'[{link["title"]}]({link["url"]})', unsafe_allow_html=True)
+            else:
+                # Show only links from the selected category
+                if selected_category in links:
+                    for link in links[selected_category]:
+                        st.markdown(f'[{link["title"]}]({link["url"]})', unsafe_allow_html=True)
+                else:
+                    st.info(f"No external links available for {selected_category}")
+
 
     # Chat interface header with logo
-    st.markdown('<div class="navbar"><span class="navbar-title">🤖 EchoFIX Support Assistant</span></div>', unsafe_allow_html=True)    
-    # Chat interface in a centered container
-    with st.container():
-        st.markdown('<div class="chat-wrapper">', unsafe_allow_html=True)
-        chat_container = st.container()
-        with chat_container:
-            for message in st.session_state.messages:
-                with st.chat_message(message["role"]):
-                    st.write(message["content"])
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    # User input handling
-    if prompt := st.chat_input("Ask about your telecom services..."):
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        st.session_state.processing = True
-        st.rerun()
-
-    # Response generation handling
-    if st.session_state.processing:
-        last_message = st.session_state.messages[-1]
-        if last_message["role"] == "user":
-            with st.spinner("Analyzing your query..."):
-                response = get_response(last_message["content"], selected_category)
-                st.session_state.messages.append({"role": "assistant", "content": response})
-            st.session_state.processing = False
-            st.rerun()
+    st.markdown('<div class="navbar"><span class="navbar-title">🤖 EchoFIX Support Assistant</span></div>', unsafe_allow_html=True)
     
-    # Footer
-    st.markdown("""
-    <div style="position: fixed; bottom: 0; right: 0; padding: 10px; font-size: 12px; color: #999;">
-        🤖 EchoFIX Support Assistant  
-    </div>
-    """, unsafe_allow_html=True)
-
 def main():
     init_auth()
     
